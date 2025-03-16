@@ -1,68 +1,74 @@
 <?php
 include('conexao.php');
 
-if(isset($_POST['email']) || isset ($_POST['senha'])) {
+// Iniciar a sessão logo no início do código
+session_start();
 
-    if(strlen($_POST['email']) == 0) {
+if (isset($_POST['email']) && isset($_POST['senha'])) {
+
+    // Verificar se os campos não estão vazios
+    if (empty($_POST['email'])) {
         echo "Preencha seu email";
-    } else if (strlen($_POST['email']) == 0) {
+    } elseif (empty($_POST['senha'])) {
         echo "Preencha sua senha";
     } else {
-        $email = $mysqli->real_escape_string($_POST['email']);
-        $senha = $mysqli->real_escape_string($_POST['senha']);
+        $email = $_POST['email'];
+        $senha = $_POST['senha'];
 
-        
-        $sql_code = "SELECT * FROM usuaríos WHERE email = '$email' AND senha = '$senha'";
-        $sql_query = $mysqli->query($sql_code) or die("Falha na execução do COD SQL:" . $mysqli->error);
-        
-        $quantidade = $sql_query->num_rows;
+        // Preparar a consulta SQL
+        $stmt = $mysqli->prepare("SELECT id, nome, senha FROM usuarios WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
 
-        //echo 
-        "quantidade: <br>" . $quantidade;
+        if ($stmt->num_rows > 0) {
+            $stmt->bind_result($id, $nome, $senha_db);
+            $stmt->fetch();
 
-        if ($quantidade == 1 ) {
+            // Comparar senha diretamente (caso não esteja criptografada)
+            if ($senha === $senha_db) {
+                $_SESSION['id'] = $id;
+                $_SESSION['nome'] = $nome;
 
-            $usuario = $sql_query->fetch_assoc();
-            if(!isset($_SESSION)) { // Faltou arrumar aqui
-                session_start();
+                // Redirecionar para a página do painel
+                header("Location: painel.php");
+                exit();
+            } else {
+                echo "Senha incorreta!";
             }
-
-            $_SESSION['id'] = $usuario['id']; // FALTOU arrumar aqui
-            $_SESSION['nome'] = $usuario['nome']; // FALTOU arrumar aqui
-
-            header("Location: painel.php");
-
-        } else { 
-            echo "Email ou senha incorretos";
+        } else {
+            echo "Email não encontrado!";
         }
+
+        $stmt->close();
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
 </head>
 <body>
-    <h1>Acesse sua conta</hl>
-    <form action= "" method="POST">
+    <h1>Acesse sua conta</h1>
+    <form action="" method="POST">
         <p>
-        <lable>E-mail</label>
-        <Input type="text" name="email">
-</p>
-<p>
-        <lable>Senha</label>
-        <Input type="password" name="senha">
-</p>
-<p>
-    <button type="submit">Entrar</button> 
-
-    <a href="cadastro.php">
-    <button type="button">Cadastrar</button>
-</a>
+            <label for="email">E-mail:</label>
+            <input type="text" name="email" id="email">
+        </p>
+        <p>
+            <label for="senha">Senha:</label>
+            <input type="password" name="senha" id="senha">
+        </p>
+        <p>
+            <button type="submit">Entrar</button> 
+        </p>
+        <a href="cadastro.php">
+            <button type="button">Cadastrar</button>
+        </a>
     </form> 
 </body>
 </html>
