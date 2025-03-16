@@ -9,4 +9,23 @@ $mysqli = new mysqli($host, $usuario, $senha, $database);
 
 if($mysqli->error) {
     die("Falha ao conectar com o DB:" . $mysqli->error);
+
+
+
+
+
+    
 }   
+
+//conexão com db feito pelo chatgpt
+$host = "localhost";  // Servidor do banco de dados
+$usuario = "root";    // Usuário do banco
+$senha = "";          // Senha do banco
+$banco = "meubanco";  // Nome do banco
+
+$mysqli = new mysqli($host, $usuario, $senha, $banco);
+
+// Verifica conexão
+if ($mysqli->connect_error) {
+    die("Falha na conexão: " . $mysqli->connect_error);
+}
