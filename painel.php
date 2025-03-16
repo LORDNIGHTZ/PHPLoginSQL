@@ -1,21 +1,21 @@
 <?php 
+include('protect.php'); 
 
-include('protect.php');
-
-if(!isset($_SESSION)) {
+// Inicia a sessão antes de qualquer saída HTML
+if (!isset($_SESSION)) {
     session_start();
-    
 }
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel</title>
 </head>
 <body>
-    Bem vindo ao painel, <?php echo !empty($_SESSION['nome']) ? $_SESSION['nome'] : "nome";['']; ?>
+    <h1>Bem-vindo ao painel, <?php echo isset($_SESSION['nome']) ? htmlspecialchars($_SESSION['nome']) : "nome"; ?>!</h1>
+    <a href="logout.php">Sair</a>
 </body>
 </html>

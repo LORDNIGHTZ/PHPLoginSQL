@@ -4,10 +4,10 @@ include('conexao.php');
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nome = $_POST['nome'];
     $email = $_POST['email'];
-    $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT); // Hash da senha
+    $senha = $_POST['senha']; // Senha sem criptografia
 
     // Verifica se o e-mail já está cadastrado
-    $stmt = $mysqli->prepare("SELECT id FROM usuaríos WHERE email = ?");
+    $stmt = $mysqli->prepare("SELECT id FROM usuarios WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($stmt->num_rows > 0) {
         echo "E-mail já cadastrado! Tente outro.";
     } else {
-        $stmt = $mysqli->prepare("INSERT INTO usuaríos (nome, email, senha) VALUES (?, ?, ?)");
+        $stmt = $mysqli->prepare("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $nome, $email, $senha);
         
         if ($stmt->execute()) {
@@ -55,8 +55,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </p>
 
         <a href="index.php">
-    <button type="button">Logar</button>
-</a>
+            <button type="button">Logar</button>
+        </a>
     </form>
 </body>
 </html>
