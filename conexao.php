@@ -20,8 +20,8 @@ if($mysqli->error) {
 //conexão com db feito pelo chatgpt
 $host = "localhost";  // Servidor do banco de dados
 $usuario = "root";    // Usuário do banco
-$senha = "";          // Senha do banco
-$banco = "meubanco";  // Nome do banco
+$senha = "d14n4m14";          // Senha do banco
+$banco = "login";  // Nome do banco
 
 $mysqli = new mysqli($host, $usuario, $senha, $banco);
 
